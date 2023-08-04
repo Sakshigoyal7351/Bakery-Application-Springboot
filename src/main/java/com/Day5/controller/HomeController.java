@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import com.Day5.global.GlobalData;
+import com.Day5.model.Product;
 import com.Day5.service.CategoryService;
 import com.Day5.service.ProductService;
 
@@ -27,8 +30,53 @@ public class HomeController {
 	@GetMapping("/shop")
 	public String shop(Model model)
 	{
+		model.addAttribute("cartCount", GlobalData.cart.size());
 		model.addAttribute("categories", categoryService.getAllCategory());
 		model.addAttribute("products", productService.getAllProduct());
 		return "shop";
 	}
+	
+	@GetMapping("/shop/category/{id}")
+	public String shopByCategory(Model model, @PathVariable int id)
+	{
+		model.addAttribute("categories", categoryService.getAllCategory());
+		model.addAttribute("cartCount", GlobalData.cart.size());
+		model.addAttribute("products", productService.getAllProductsByCategoryId(id));
+		return "shop";
+	}
+	
+	@GetMapping("/shop/viewproduct/{id}")
+	public String viewProduct(Model model, @PathVariable long id)
+	{
+		model.addAttribute("cartCount", GlobalData.cart.size());
+		model.addAttribute("product", productService.getProductById(id));
+		return "viewProduct";
+	}
+	
+	@GetMapping("/cart/removeItem/{index}")
+	public String cartItemRemove(@PathVariable int index)
+	{
+		GlobalData.cart.remove(index);
+		return "redirect:/cart";
+	}
+	
+	
+	@GetMapping("/checkout")
+	public String checkout(Model model)
+	{
+		model.addAttribute("total", GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
+		return "checkout";
+	}
+	
+	@GetMapping("/payNow")
+	public String paymentDone()
+	{
+		return "paymentDone";
+	}
+	
+	
+	
+	
+	
+	
 }
