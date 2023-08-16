@@ -14,6 +14,11 @@ import jakarta.validation.constraints.NotEmpty;
 public class CustomerUserDetail extends User implements UserDetails {
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public CustomerUserDetail(Integer id, @NotEmpty String firstName, String lastName,
 			@NotEmpty @Email(message = "{errors.invalid_email}") String email, @NotEmpty String password,
 			List<Role> roles) {
